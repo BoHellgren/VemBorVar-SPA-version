@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Vem Bor Var</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+
+  <meta name="Description" content="Basic-versionen av Vem Bor Var">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#16161d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="x-ua-compatible" content="IE=Edge" />
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" type="text/css" href="theme.css">
+  <link rel="apple-touch-icon" href="/assets/icon/icon-192x192.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+
+  <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+
+</head>
+
+<body>
+
+  <div class='container' id='container'>
+
+    <div class='header1' id='header1'>
+      <img class="centerImage" src="../../assets/imgs/logga.png"> </img>
+      <p>Brf Husarvikens Strand</p>
+    </div>
+    <div class='header2' id='header2'>
+      <img class="centerImage" src="../../assets/imgs/logga.png"> </img>
+      <p id="where">Brf Husarvikens Strand</p>
+    </div>
+    <div class='header3' id='header3'>
+      <p>Brf Husarvikens Strand</p>
+      <input id='textInput' type='search' onInput=showHits(event) placeholder="Skriv namn eller lgh-nummer"></input>
+      <p> &emsp; </p>
+    </div>
+
+    <div class='bluehouse' id='bluehouse'>
+      <p>Taxgatan 3</p>
+      <button class="StdButton" onclick=show(28)>7 trappor</button>
+      <button class="StdButton" onclick=show(27)>6 trappor</button>
+      <button class="StdButton" onclick=show(26)>5 trappor</button>
+      <button class="StdButton" onclick=show(25)>4 trappor</button>
+      <button class="StdButton" onclick=show(24)>3 trappor</button>
+      <button class="StdButton" onclick=show(23)>2 trappor</button>
+      <button class="StdButton" onclick=show(22)>1 trappa</button>
+    </div>
+    <div class='redhouse' id='redhouse'>
+      <p>Taxgatan 7</p>
+      <button class="StdButton" onclick=show(17)>6 trappor</button>
+      <button class="StdButton" onclick=show(16)>5 trappor</button>
+      <button class="StdButton" onclick=show(15)>4 trappor</button>
+      <button class="StdButton" onclick=show(14)>3 trappor</button>
+      <button class="StdButton" onclick=show(13)>2 trappor</button>
+      <button class="StdButton" onclick=show(12)>1 trappa</button>
+    </div>
+
+    <div class='memberlist' id='memberlist'>
+      <table id='membertable'></table>
+    </div>
+
+    <div class="footer1" id="footer1">
+      <button class="StdButton BottomButton" onclick=search()>Sök på namn eller lgh-nummer</button>
+      <p class="footnote"> Version 3.0 &emsp; &emsp; &emsp; 2018-03-16 </p>
+    </div>
+    <div class="footer2" id="footer2">
+      <button class="StdButton BottomButton SmallButton" onclick=up()>Upp</button>
+      <button class="StdButton BottomButton SmallButton" onclick=down()>Ner</button>
+      <button class="StdButton BottomButton SmallButton" onclick=home()>Tillbaks</button>
+    </div>
+    <div class="footer3" id="footer3">
+      <button class="StdButton BottomButton" onclick=home()>Tillbaks till hemsidan</button>
+    </div>
+
+  </div>
+
+  <script src="members.js"></script>
+  <script src="app.js"></script>
+
+</body>
+
+</html>

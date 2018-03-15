@@ -1,0 +1,122 @@
+
+html {
+width: 100%;
+height: 100%;
+
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: sans-serif;
+}
+
+p {
+  font-size: 18px;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 10px;
+  padding-top: 0px;
+  margin-top: 2px;
+}
+
+table {
+  width: 100%;
+  table-layout: auto;
+  grid-column: 1 / 3;
+  grid-row: 2 / 9;
+
+}
+
+tr, td {
+  height: 20px;
+  font-size: 18px;
+}
+
+input {
+  font-size: 18px;
+  border-radius: 4px;
+  width: 100%;
+  height: 38px;
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
+input::placeholder {
+  color: rgb(152, 153, 165);
+}
+
+.container {    
+height: 100vh;
+display: grid;
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 25vh repeat(8,8vh) auto ;
+grid-gap: 5px;
+padding-left: 5px;
+padding-right: 5px;
+background: #eeeeee;
+}
+
+.header1, .header2, .header3 {
+  grid-row: 1 / 2;
+  grid-column: 1 / 3;
+}
+
+.memberlist {
+  grid-row: 2 / 9;
+  grid-column: 1 / 3;
+  overflow: scroll;
+}
+.centerImage {
+    text-align: center;
+    width: 100%;
+    height: 15vh;
+} 
+
+.bluehouse {
+  grid-column: 1 / 2;
+  grid-row: 2 / 9;
+  background: #9f9fee;
+}
+
+.redhouse {
+  grid-column: 2 / 3;
+  grid-row: 3 / 9;
+  background: #f866aa;
+}
+
+.memberlist {
+  grid-column: 1 / 3;
+  grid-row: 2 / 9;
+}
+
+.footer1, .footer2, .footer3 {
+  grid-column: 1 / 3;
+  grid-row: 9 / 10;
+  height: 100%;
+}
+
+
+.StdButton {
+  width: 90%;
+  background: #5851ff;
+  color: white;
+  margin: 5px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px ;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.BottomButton {
+  width: 95%;
+  font-style: italic;
+}
+.SmallButton {
+   width: 28%;
+}
+
