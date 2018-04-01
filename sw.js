@@ -6,10 +6,10 @@ if (workbox) {
   console.log(`Boo! Workbox didn't load 😬`);
 }
 
-// workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug);
+//workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug);
 workbox.core.setLogLevel(workbox.core.LOG_LEVELS.warn);
 
-var rev = '303';
+var rev = '31';
 
 workbox.precaching.precacheAndRoute([{
     url: '/manifest.json',
@@ -28,6 +28,10 @@ workbox.precaching.precacheAndRoute([{
     revision: rev
   },
   {
+    url: '/registerServiceWorker.js',
+    revision: rev
+  },
+  {
     url: '/theme.css',
     revision: rev
   },
@@ -40,7 +44,11 @@ workbox.precaching.precacheAndRoute([{
     revision: rev
   },
   {
-    url: '/assets/icon/icon-192x192.png',
+    url: '/assets/icon/apple-touch-icon.png',
+    revision: rev
+  },
+  {
+    url: '/assets/icon/icon-150x150.png',
     revision: rev
   },
   {
@@ -76,7 +84,7 @@ self.addEventListener('push', function (e) {
 
   var options = {
     body: body,
-    icon: 'assets/imgs/logo.png',
+    icon: 'assets/icon/icon-150x150.png',
     vibrate: [200, 100, 200],
     tag: 1,
     renotify: true,

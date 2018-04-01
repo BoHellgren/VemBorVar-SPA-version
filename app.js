@@ -1,28 +1,34 @@
 // app.js
 
- console.log('window.navigator.standalone: ', window.navigator.standalone);
-
-window.onload = function () {
-
-    if ('serviceWorker' in navigator) {
-
-        // window.navigator.serviceWorker.register('/sw.js?' + Math.random().toString())
-        window.navigator.serviceWorker.register('/sw.js')
-            .then(function (swReg) {
-                console.log('Service Worker is registered', swReg);
-              //  swReg.update();
-              //  console.log('Service Worker is updated', swReg);
-                handleSubscribe(swReg);
-            })
-            .catch(function (error) {
-                console.error('Service Worker Error', error);
-            })
-    }
-}
+// console.log('name: ', window.navigator.appName);
+// console.log('version: ', window.navigator.appVersion);
+// console.log('platform: ', window.navigator.platform);
+// console.log('window.location.hostname: ', window.location.hostname); 
 
 // Update the database to trace usage of app
 
-const firebaseConfig = {
+var mql;
+var displayMode = "";
+mql = window.matchMedia('(display-mode: standalone)');
+if (mql.matches) {
+    displayMode = "standalone";
+}
+mql = window.matchMedia('(display-mode: browser)');
+if (mql.matches) {
+    displayMode = "browser";
+}
+console.log('mql display-mode: ', displayMode);
+console.log('window.navigator.standalone: ', window.navigator.standalone);
+if (!displayMode) {
+    if (window.navigator.standalone) {
+        displayMode = "standalone";
+    } else {
+        displayMode = "browser";
+    }
+}
+console.log('display-mode: ', displayMode);
+
+/* const firebaseConfig = {
     apiKey: "AIzaSyC1FttZvq19tbUtiRqRwkCeFokDb484J0A",
     authDomain: "mysubscriptiondb.firebaseapp.com",
     databaseURL: "https://mysubscriptiondb.firebaseio.com",
@@ -31,23 +37,43 @@ const firebaseConfig = {
     messagingSenderId: "170203061159"
 };
 firebase.initializeApp(firebaseConfig);
-console.log('firebase initialized: ', firebase);
+console.log('firebase initialized: ', firebase); */
+// Above firebase initialization is done in createServiceWorker.js
+
 var subsdb = firebase.database();
-// console.log('this.subsdb: ', this.subsdb);
 
 var tracetime = Date();
 var tracemsg = navigator["userAgent"];
-const traces = this.subsdb.ref('/traces');
-traces.push({
-    userAgent: tracemsg,
-    timesubmitted: tracetime
-}, function (error) {
-    if (error)
-        console.log('Error has occured during saving process')
-    else {
-        console.log("Trace data have been saved succesfully: ", tracemsg);
-    }
+const traces = this.subsdb.ref('/' + window.location.hostname.replace(/(\.)/g, "-") + '-traces');
+url = "https://api.ipify.org?format=json";
+var myip = "00.00.00.00";
+fetch(url).then(function (response) {
+    return response.json();
+}).then(function (data) {
+    myip = data.ip;
+    writeTrace();
+}).catch(function () {
+    console.error("Failure requesting ip address from api.ipify.org");
+    writeTrace();
 });
+
+function writeTrace() {
+    traces.push({
+        ip: myip,
+        timesubmitted: tracetime,
+        displayMode: displayMode,
+        userAgent: tracemsg
+    }, function (error) {
+        if (error)
+            console.error("'Error has occured when saving trace record: ", error)
+        else {
+            console.log("Trace data have been saved succesfully: ", tracemsg);
+        }
+    });
+}
+
+
+// Initialize DOM
 
 header1 = document.getElementById("header1");
 header2 = document.getElementById("header2");
@@ -72,7 +98,6 @@ var tr = [];
 var oldmask;
 
 // members array is included through <script> clause in HTML right before app.js
-// console.log(members);
 
 for (i = members.length - 1; i >= 0; i--) {
 
@@ -98,107 +123,13 @@ for (i = members.length - 1; i >= 0; i--) {
 extrarow = document.createElement("tr");
 mytable.insertBefore(extrarow, mytable.childNodes[0]);
 
-// console.log('mytable ', mytable);
-
-// window.alert('app.js nästan klar');
 home();
-
-
 console.log('app.js initialization complete');
 
-
-// Function gotoShow
-function gotoShow(event) {
-    console.log('gotoShow event', event.target.alt);
-    show(Number(event.target.alt.substring(0, 2)));
-}
-
-
-// Function handleSubscript
-function handleSubscribe(swReg) {
-
-    console.log('handleSubscribe called');
-
-    if ('Notification' in window) {
-
-        var notperm = window["Notification"].permission
-        console.log('Notification.permisson: ', notperm);
-
-        if (notperm === 'denied') return;
-
-
-        swReg.pushManager.getSubscription()
-            .then(function (subscription) {
-                if (!subscription) { // Don't subscribe if we are already subscribed
-                    if (notperm != 'granted') {
-                        // Don't ask if we already allow push messages
-                        window.alert(
-                            'Vill du ta emot viktiga meddelanden från bostadsrättsföreningen?' +
-                            ' Svara i så fall Tillåt (Allow) på frågan om aviseringar som kommer när du trycker på OK.'
-                        );
-                    }
-                    subscribeMe(swReg);
-                };
-            })
-            .catch(function (err) {
-                console.log('Error during getSubscription()', err);
-            });
-    };
-} // end of function handleSubscribe
-
-// Function subscribeMe
-
-function subscribeMe(swReg) {
-
-    console.log('subscribeMe startad');
-
-    navigator.serviceWorker.ready.then(function (reg) {
-
-        swReg.pushManager.subscribe({
-                userVisibleOnly: true
-            })
-
-            .then(function (subscription) {
-                // console.log('User is subscribed. Subscription:', subscription);
-                var mysub = JSON.stringify(subscription);
-                // Update the subscription database 
-                // console.log('this.subsdb again: ', this.subsdb);
-                const subs = this.subsdb.ref('/subs');
-                console.log('subs:', subs);
-                var subtime = Date();
-                subs.push({
-                    subscription: mysub,
-                    timesubmitted: subtime
-                }, function (error) {
-                    if (error)
-                        console.log('Error has occured during saving process')
-                    else {
-                        console.log("Subscription has been saved succesfully: ", mysub);
-                        // window.location.href="home.html";  //Goto home page
-                    }
-                });
-
-
-            })
-
-            .catch(function (err) {
-                var newperm = window["Notification"].permission;
-                if (newperm === 'denied') {
-                    console.warn('Permission for notifications was denied by user');
-                } else {
-                    console.error('Failed to subscribe the user: ', err);
-                }
-            });
-    });
-} // end of function subscribeMe */
-
-
-
-
 function home() {
-
+    
     console.log('home called');
-
+    
     header1.style.visibility = 'visible';
     header2.style.visibility = 'hidden';
     header3.style.visibility = 'hidden';
@@ -213,6 +144,12 @@ function home() {
     footer3.style.visibility = 'hidden';
 }
 
+
+// Function gotoShow
+function gotoShow(event) {
+    // console.log('gotoShow event', event.target.alt);
+    show(Number(event.target.alt.substring(0, 2)));
+}
 
 function show(mask) {
 
@@ -232,11 +169,19 @@ function show(mask) {
     var floor, trappor;
     if (mask > 20) {
         floor = mask - 21;
-        if (floor == 1) {trappor=" trappa"} else {trappor=" trappor"};
+        if (floor == 1) {
+            trappor = " trappa"
+        } else {
+            trappor = " trappor"
+        };
         where = 'Taxgatan 3  &emsp; &emsp; &emsp;' + floor.toString() + trappor;
     } else {
         floor = mask - 11;
-        if (floor == 1) {trappor=" trappa"} else {trappor=" trappor"};
+        if (floor == 1) {
+            trappor = " trappa"
+        } else {
+            trappor = " trappor"
+        };
         where = 'Taxgatan 3  &emsp; &emsp; &emsp;' + floor.toString() + trappor;
     }
     document.getElementById("where").innerHTML = where;
@@ -298,7 +243,6 @@ function down() {
     }
 }
 
-
 function search() {
     console.log('search called ');
 
@@ -340,7 +284,7 @@ function showHits(ev) {
         })
     }
 
-    console.log('val', val, 'antal: ', hits.length);
+    // console.log('val', val, 'antal: ', hits.length);
 
     for (i = 0; i < hits.length; i++) {
         td[0][i].innerHTML = hits[i].lgh;
